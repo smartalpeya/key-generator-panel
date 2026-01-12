@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Generator - smartalpeya</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            color: var(--dark);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header .badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        
+        .card {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #34d399);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #f87171);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .key-display {
+            background: white;
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--dark);
+            word-break: break-all;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .keys-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .key-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .key-code {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .key-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .key-display {
+                font-size: 18px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-key"></i> Key Generator Pro</h1>
+            <p>Générez des clés sécurisées en un clic</p>
+            <div class="badge">
+                <i class="fas fa-globe"></i> smartalpeya.github.io
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 style="margin-bottom: 20px; color: var(--dark);">
+                <i class="fas fa-cog"></i> Configuration
+            </h3>
+            
+            <div class="input-group">
+                <label><i class="fas fa-hashtag"></i> Nombre de clés :</label>
+                <input type="number" id="quantity" min="1" max="100" value="10">
+            </div>
+            
+            <div class="input-group">
+                <label><i class="fas fa-ruler"></i> Longueur :</label>
+                <select id="length">
+                    <option value="16">16 caractères (Standard)</option>
+                    <option value="20">20 caractères (Pro)</option>
+                    <option value="24">24 caractères (Ultra)</option>
+                    <option value="32">32 caractères (Max)</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="generateKeys()">
+                <i class="fas fa-bolt"></i> Générer des clés
+            </button>
+        </div>
+        
+        <div class="key-display" id="keyOutput">
+            <div style="color: #999;">
+                <i class="fas fa-key"></i><br>
+                Les clés générées apparaîtront ici
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="totalKeys">0</div>
+                <div class="stat-label">Clés totales</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="uniqueKeys">0</div>
+                <div class="stat-label">Clés uniques</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 style="margin-bottom: 15px; color: var(--dark);">
+                <i class="fas fa-list"></i> Historique des clés
+            </h3>
+            
+            <div class="keys-list" id="keysList">
+                <!-- Les clés apparaîtront ici -->
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
+                <button class="btn btn-success" onclick="exportKeys()">
+                    <i class="fas fa-download"></i> Exporter
+                </button>
+                <button class="btn btn-danger" onclick="clearAll()">
+                    <i class="fas fa-trash"></i> Effacer
+                </button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>
+                <i class="fas fa-user"></i> Utilisateur : smartalpeya<br>
+                <i class="fas fa-shield-alt"></i> Clés stockées localement<br>
+                <i class="fas fa-clock"></i> Généré le: <span id="currentDate"></span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Initialisation
+        let keys = JSON.parse(localStorage.getItem('smartalpeya_keys')) || [];
+        updateDisplay();
+        
+        // Date actuelle
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('fr-FR');
+        
+        // Générer une clé aléatoire
+        function generateKey(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let key = '';
+            
+            for (let i = 0; i < length; i++) {
+                key += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            // Format: XXXX-XXXX-XXXX-XXXX
+            return key.match(/.{4}/g).join('-');
+        }
+        
+        // Générer plusieurs clés
+        function generateKeys() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const length = parseInt(document.getElementById('length').value);
+            
+            if (quantity < 1 || quantity > 100) {
+                alert('Veuillez entrer un nombre entre 1 et 100');
+                return;
+            }
+            
+            const newKeys = [];
+            for (let i = 0; i < quantity; i++) {
+                newKeys.push({
+                    code: generateKey(length),
+                    timestamp: new Date().toLocaleTimeString('fr-FR'),
+                    date: new Date().toLocaleDateString('fr-FR')
+                });
+            }
+            
+            // Ajouter aux clés existantes
+            keys = [...newKeys, ...keys];
+            
+            // Sauvegarder
+            localStorage.setItem('smartalpeya_keys', JSON.stringify(keys));
+            
+            // Mettre à jour l'affichage
+            updateDisplay();
+            
+            // Notification
+            showNotification(`${quantity} clé(s) générée(s) avec succès !`);
+        }
+        
+        // Mettre à jour l'affichage
+        function updateDisplay() {
+            // Afficher la dernière clé
+            if (keys.length > 0) {
+                document.getElementById('keyOutput').innerHTML = `
+                    <div style="color: var(--primary); font-size: 22px;">
+                        ${keys[0].code}
+                    </div>
+                    <div style="font-size: 14px; color: #666; margin-top: 10px;">
+                        <i class="fas fa-clock"></i> ${keys[0].date} ${keys[0].timestamp}
+                    </div>
+                `;
+            }
+            
+            // Mettre à jour les stats
+            const uniqueKeys = [...new Set(keys.map(k => k.code))];
+            document.getElementById('totalKeys').textContent = keys.length;
+            document.getElementById('uniqueKeys').textContent = uniqueKeys.length;
+            
+            // Mettre à jour la liste
+            const keysList = document.getElementById('keysList');
+            keysList.innerHTML = '';
+            
+            keys.forEach((key, index) => {
+                const keyItem = document.createElement('div');
+                keyItem.className = 'key-item';
+                keyItem.innerHTML = `
+                    <div>
+                        <div class="key-code">${key.code}</div>
+                        <div class="key-time">
+                            <i class="far fa-clock"></i> ${key.date} ${key.timestamp}
+                        </div>
+                    </div>
+                    <button class="copy-btn" onclick="copyKey('${key.code}')">
+                        <i class="far fa-copy"></i> Copier
+                    </button>
+                `;
+                keysList.appendChild(keyItem);
+            });
+        }
+        
+        // Copier une clé
+        function copyKey(key) {
+            navigator.clipboard.writeText(key).then(() => {
+                showNotification(`Clé copiée : ${key}`);
+            });
+        }
+        
+        // Exporter toutes les clés
+        function exportKeys() {
+            if (keys.length === 0) {
+                showNotification('Aucune clé à exporter !', 'warning');
+                return;
+            }
+            
+            let content = 'Clés générées - smartalpeya Key Generator\n';
+            content += '==========================================\n\n';
+            
+            keys.forEach(key => {
+                content += `${key.code} | ${key.date} ${key.timestamp}\n`;
+            });
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cles_smartalpeya_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification(`${keys.length} clés exportées !`);
+        }
+        
+        // Effacer toutes les clés
+        function clearAll() {
+            if (keys.length === 0) return;
+            
+            if (confirm(`Voulez-vous vraiment supprimer ${keys.length} clés ?`)) {
+                keys = [];
+                localStorage.removeItem('smartalpeya_keys');
+                updateDisplay();
+                showNotification('Toutes les clés ont été supprimées.', 'success');
+            }
+        }
+        
+        // Notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Ajouter le CSS pour les animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Initialiser l'affichage
+        updateDisplay();
+    </script>
+</body>
+</html>
