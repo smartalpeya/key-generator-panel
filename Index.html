@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Generator Panel</title>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --dark: #1f2937;
+            --light: #f9fafb;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--dark);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+        }
+        
+        .card {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .key-display {
+            background: white;
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--dark);
+            word-break: break-all;
+        }
+        
+        .key-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .key-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔑 Key Generator Pro</h1>
+            <p>Générez des clés sécurisées depuis votre mobile</p>
+        </div>
+        
+        <div class="card">
+            <h2 style="color: var(--dark); margin-bottom: 20px;">Configuration</h2>
+            
+            <div class="input-group">
+                <label>Nombre de clés :</label>
+                <input type="number" id="quantity" min="1" max="50" value="5">
+            </div>
+            
+            <div class="input-group">
+                <label>Longueur :</label>
+                <select id="length">
+                    <option value="16">16 caractères</option>
+                    <option value="20">20 caractères</option>
+                    <option value="24">24 caractères</option>
+                    <option value="32">32 caractères</option>
+                </select>
+            </div>
+            
+            <button class="btn" onclick="generateKeys()">
+                ⚡ Générer des clés
+            </button>
+        </div>
+        
+        <div class="key-display" id="keyOutput">
+            Cliquez sur "Générer" pour créer une clé
+        </div>
+        
+        <div class="card">
+            <h3 style="color: var(--dark); margin-bottom: 15px;">Clés générées</h3>
+            <div class="key-list" id="keyList">
+                <!-- Les clés apparaîtront ici -->
+            </div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn" onclick="exportKeys()" style="background: #10b981;">
+                    💾 Exporter
+                </button>
+                <button class="btn" onclick="clearAll()" style="background: #ef4444;">
+                    🗑️ Effacer
+                </button>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #666; font-size: 14px;">
+            <p>Généré via GitHub Pages | Clés stockées localement</p>
+        </div>
+    </div>
+
+    <script>
+        // Stockage des clés
+        let generatedKeys = [];
+        
+        // Fonction pour générer une clé
+        function generateKey(length) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let key = '';
+            
+            for (let i = 0; i < length; i++) {
+                key += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            // Format: XXXX-XXXX-XXXX-XXXX
+            return key.match(/.{4}/g).join('-');
+        }
+        
+        // Générer plusieurs clés
+        function generateKeys() {
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const length = parseInt(document.getElementById('length').value);
+            
+            generatedKeys = [];
+            let keysHTML = '';
+            
+            for (let i = 0; i < quantity; i++) {
+                const key = generateKey(length);
+                generatedKeys.push(key);
+                
+                keysHTML += `
+                    <div class="key-item">
+                        <span>${key}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('${key}')">
+                            Copier
+                        </button>
+                    </div>
+                `;
+            }
+            
+            // Afficher les clés
+            document.getElementById('keyOutput').textContent = generatedKeys[0];
+            document.getElementById('keyList').innerHTML = keysHTML;
+            
+            // Sauvegarder localement
+            localStorage.setItem('savedKeys', JSON.stringify(generatedKeys));
+            
+            // Notification
+            alert(`${quantity} clé(s) générée(s) avec succès !`);
+        }
+        
+        // Copier dans le presse-papier
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Clé copiée : ' + text);
+            });
+        }
+        
+        // Exporter toutes les clés
+        function exportKeys() {
+            if (generatedKeys.length === 0) {
+                alert('Générez d\'abord des clés !');
+                return;
+            }
+            
+            const text = generatedKeys.join('\n');
+            const blob = new Blob([text], { type: 'text/plain' });
+            
+            // Créer un lien de téléchargement
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'cles_generees.txt';
+            link.click();
+            
+            alert('Fichier exporté !');
+        }
+        
+        // Effacer toutes les clés
+        function clearAll() {
+            if (confirm('Voulez-vous effacer toutes les clés ?')) {
+                generatedKeys = [];
+                localStorage.removeItem('savedKeys');
+                document.getElementById('keyOutput').textContent = 'Cliquez sur "Générer" pour créer une clé';
+                document.getElementById('keyList').innerHTML = '';
+                alert('Toutes les clés ont été effacées.');
+            }
+        }
+        
+        // Charger les clés sauvegardées au démarrage
+        window.onload = function() {
+            const saved = localStorage.getItem('savedKeys');
+            if (saved) {
+                generatedKeys = JSON.parse(saved);
+                
+                if (generatedKeys.length > 0) {
+                    document.getElementById('keyOutput').textContent = generatedKeys[0];
+                    
+                    let keysHTML = '';
+                    generatedKeys.forEach(key => {
+                        keysHTML += `
+                            <div class="key-item">
+                                <span>${key}</span>
+                                <button class="copy-btn" onclick="copyToClipboard('${key}')">
+                                    Copier
+                                </button>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('keyList').innerHTML = keysHTML;
+                }
+            }
+        };
+    </script>
+</body>
+  </html>
